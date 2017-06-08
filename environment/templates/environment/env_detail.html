@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <h1>{{environ.environmentName}}</h1>
+    <h2>Collections: </h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Watson API ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for collection in environ.collection_set.all%}
+                <tr>
+                    <td>{{collection.id}}</td>
+                    <td>{{collection.collectionName}}</td>
+                    <td>{{collection.collectionIDString}}</td>
+                </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+    <br>
+    <a href = "{% url 'environment:index' %}">Back</a>
+</html>

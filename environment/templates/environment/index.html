@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Environment</th>
+                <th>Watson API ID</th>    
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for environ in all_environs%}
+                    <td><a href="{% url 'environment:env_detail' environ.id%}">{{environ.id}}</a></td>
+                    <td>{{environ.environmentName}}</td>
+                    <td>{{environ.environmentIDString}}</td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <h1>{{environ.environmentName}}</h1>
+    <h2>{{collect.collectionName}}</h2>
+    <h3>Documents: </h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Watson API ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for document in collect.document_set.all%}
+                <tr>
+                    <td>{{document.id}}</td>
+                    <td>{{document.documentName}}</td>
+                    <td>{{document.documentIDString}}</td>
+                </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</html>
