@@ -1,5 +1,21 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.views.generic import TemplateView
 from .models import Environment, Collection
+from .forms import QueryForm
+
+
+def query(request):
+    if request.method == 'POST':
+        form = QueryForm(request.POST)
+        if form.is_valid():
+            results = form.query_environ()
+            query = form.queryText
+            return render(request, 'environment/results.html', {'query':query,'results':results})
+    else:
+        form = QueryForm()
+    return render(request, 'environment/query.html', {'form':form})
+    
 
 def index(request):
     all_environs = Environment.objects.all()
