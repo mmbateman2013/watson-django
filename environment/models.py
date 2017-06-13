@@ -28,3 +28,9 @@ class Document(models.Model):
     
     def __str__(self):
         return self.documentName+' '+self.documentIDString
+        
+#TODO: Add Query Model
+"""
+    column: queryText
+    column: queryResults (holds the JSON response from API)
+"""

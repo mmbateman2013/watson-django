@@ -25,7 +25,13 @@ def env_detail(request, environment_id):
     environ = get_object_or_404(Environment, pk=environment_id)
     return render(request, 'environment/env_detail.html', {'environ': environ,})
     
+#NOT CURRENTLY in URLS TODO
 def col_documents(request, environment_id ,collection_id):
     environ = get_object_or_404(Environment, pk=environment_id)
     collect = get_object_or_404(Collection, pk=collection_id)
     return render(request, 'environment/documents.html', {'environ': environ,'collect': collect})
+    
+#TODO: Add view for adding collections
+#TODO: Add view for adding documents to a collection
+#TODO: Add view to call forms.py QueryForm and hook up Michael's html and css
+#TODO: Add view to display results of QueryForm after API is called
