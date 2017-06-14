@@ -5,9 +5,13 @@
         <title>Results Page</title>
     </head>
     <body>
+        <h1>Query: </h1>
+        <p>{{query}}</p>
         <h1>Results:</h1>
         <div id="results">
-    
+            {%for result in results%}
+                <p>{{result}}</p>
+            {% endfor %}
         </div>
     </body>
 </html>

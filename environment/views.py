@@ -3,18 +3,23 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
 from .models import Environment, Collection
 from .forms import QueryForm
+from . import services
 
 
-def query(request):
+def query(request, environment_id):
     if request.method == 'POST':
         form = QueryForm(request.POST)
         if form.is_valid():
-            results = form.query_environ()
-            query = form.queryText
-            return render(request, 'environment/results.html', {'query':query,'results':results})
+            query_text = form.cleaned_data['queryText']
+            collections = []
+            for collection in form.cleaned_data['collection']:
+                collections.append(collection.collectionIDString)
+            environ = Environment.objects.get(pk=environment_id)
+            results = services.query_environ(query_text,environ.environmentIDString,collections)
+            return render(request, 'environment/results.html', {'query':query_text,'results':results})
     else:
         form = QueryForm()
-    return render(request, 'environment/query.html', {'form':form})
+        return render(request, 'environment/query.html', {'form':form, 'environ_id':environment_id})
     
 
 def index(request):
