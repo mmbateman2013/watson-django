@@ -19,6 +19,9 @@ urlpatterns = [
     # /environment/{environ_id}/query/results
     url(r'^(?P<environment_id>[0-9]+)/query/results$', views.query, name='results'),
     
+    # ex: /environment/contacts/
+    url(r'^contacts/', views.contacts, name='contacts'),
+
     #TODO: Add views.col_documents
     #TODO: Add view for adding documents to a collection
     #TODO: Add view to call forms.py QueryForm and hook up Michael's html and css
