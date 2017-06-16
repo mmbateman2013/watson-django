@@ -1,0 +1,9 @@
+{% if alpha_contact_list %}
+    <ul>
+    {% for person in alpha_contact_list         %}
+        <li>{{ person.contact_name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No contacts are available.</p>
+{% endif %}
