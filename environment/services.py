@@ -3,7 +3,7 @@ import os
 import json
 from watson_developer_cloud import DiscoveryV1
 #sudo pip install watson-developer-cloud
-# from .models import Environment, Collection
+from .models import Google_Contact
 
 import httplib2
 
@@ -45,13 +45,21 @@ def query_environ(query_text,environ_id_string, collect_ids):
             sub_result['text'] = json_field_text
             
             #get filename
-            json_field_filename = sub_result['extracted_metadata'].get['filename']
-            json_field_filename = json_field_filename.rsplit('.', 1)
+            json_field_filename = sub_result['extracted_metadata'].get('filename')
+            json_field_filename = json_field_filename.rsplit('.', 1)[0]
             
             #lookup contact in address book
+            gc_set = Google_Contact.objects.filter(contact_name=json_field_filename)
             
+            if len(gc_set) > 0:
+                #add contact info into Json object
+                gc = gc_set[0]
+                sub_result['Google_Contact'] = {}
+                sub_result['Google_Contact']['contact_name'] = gc.contact_name
+                sub_result['Google_Contact']['contact_email'] = gc.contact_email
+                sub_result['Google_Contact']['contact_phone_no'] = gc.contact_phone_no
 
-            results.append(json.dumps(sub_result))
+            results.append(sub_result)
     return results
     
 def get_contacts():
