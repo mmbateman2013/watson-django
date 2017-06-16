@@ -1,17 +1,25 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="main.css" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'environment/css/main.css' %}" type="text/css"/>
         <title>Results Page</title>
     </head>
     <body>
-        <h1>Query: </h1>
-        <p>{{query}}</p>
+        <div id="Query Search">
+            <label id="QueryPage" for="Query:">Query: </label>
+             {{ form.queryText }}
+               
+        </div>
         <h1>Results:</h1>
         <div id="results">
             {%for result in results%}
-                <p>{{result}}</p>
+            <a href = "{% url 'environment:query' environ_id %}">Query</a>
+        <div>
+                    <p>{{result}}</p>
+                 </div>
             {% endfor %}
         </div>
+        
     </body>
 </html>

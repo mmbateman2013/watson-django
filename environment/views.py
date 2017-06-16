@@ -16,7 +16,7 @@ def query(request, environment_id):
                 collections.append(collection.collectionIDString)
             environ = Environment.objects.get(pk=environment_id)
             results = services.query_environ(query_text,environ.environmentIDString,collections)
-            return render(request, 'environment/results.html', {'query':query_text,'results':results})
+            return render(request, 'environment/results.html', {'results':results,'form':form, 'environ_id':environment_id})
     else:
         form = QueryForm()
         return render(request, 'environment/query.html', {'form':form, 'environ_id':environment_id})
