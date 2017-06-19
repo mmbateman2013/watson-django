@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
-from .models import Environment, Collection, Google_Contact
+from .models import Environment, Collection, Google_Contact, Document
 from .forms import QueryForm
 from . import services
 
@@ -75,6 +75,11 @@ def index(request):
 def env_detail(request, environment_id):
     environ = get_object_or_404(Environment, pk=environment_id)
     return render(request, 'environment/env_detail.html', {'environ': environ,})
+    
+def document_detail(request, environment_id, document_id):
+    doc = get_object_or_404(Document, pk=document_id)
+    #perhaps do something to the html content so it renders right
+    return render(request, 'environment/doc_detail.html', {'html_content': doc.documentContent})
     
 #NOT CURRENTLY in URLS TODO
 def col_documents(request, environment_id ,collection_id):

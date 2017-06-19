@@ -21,6 +21,9 @@ urlpatterns = [
     
     # ex: /environment/contacts/
     url(r'^contacts/', views.contacts, name='contacts'),
+    
+    # /environment/{environ_id}/document/{doc_id}/detail
+    url(r'^(?P<environment_id>[0-9]+)/document/(?P<document_id>[0-9]+)/detail$', views.document_detail, name='detail'),
 
     #TODO: Add views.col_documents
     #TODO: Add view for adding documents to a collection

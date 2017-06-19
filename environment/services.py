@@ -3,7 +3,7 @@ import os
 import json
 from watson_developer_cloud import DiscoveryV1
 #sudo pip install watson-developer-cloud
-from .models import Google_Contact
+from .models import Google_Contact, Document, Collection
 
 import httplib2
 
@@ -13,7 +13,6 @@ from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 from oauth2client.client import OAuth2WebServerFlow
-from models import Collection
 
 
 WATSON_UN = "dba214e1-bf76-46b7-8d6e-8c5c1aa6b24c"
@@ -30,7 +29,7 @@ def query_environ(query_text,environ_id_string, collect_ids):
     )
     results = []
     for collection in collect_ids:
-        qopts = {'query': query_text, 'return': 'id,score,text,extracted_metadata.filename'}
+        qopts = {'query': query_text, 'return': 'id,score,text,html,extracted_metadata.filename'}
         my_query = discovery.query(environ_id_string, collection, qopts)
         sub_results = my_query.get("results", [])
         
@@ -70,6 +69,20 @@ def query_environ(query_text,environ_id_string, collect_ids):
                 sub_result['Google_Contact']['contact_name'] = gc.contact_name
                 sub_result['Google_Contact']['contact_email'] = gc.contact_email
                 sub_result['Google_Contact']['contact_phone_no'] = gc.contact_phone_no
+            
+            #write html content to db
+            doc_id = sub_result.get("id")
+            json_field_html = sub_result.get("html").replace('<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>', '').trim()
+            
+            try:
+                doc = Document.objects.get(documentIDString=id)
+                doc.documentName = json_field_filename
+                doc.documentContent = json_field_html
+            except Document.DoesNotExist:
+                doc = Document(documentName=json_field_filename, documentIDString=id, collection=collectionObj, documentContent=json_field_html)
+            
+            doc.save()
+            sub_result['document_id'] = doc.id
 
             results.append(sub_result)
     return results
