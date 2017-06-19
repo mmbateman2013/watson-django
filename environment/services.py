@@ -13,6 +13,7 @@ from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 from oauth2client.client import OAuth2WebServerFlow
+from models import Collection
 
 
 WATSON_UN = "dba214e1-bf76-46b7-8d6e-8c5c1aa6b24c"
@@ -29,7 +30,7 @@ def query_environ(query_text,environ_id_string, collect_ids):
     )
     results = []
     for collection in collect_ids:
-        qopts = {'query': query_text, 'return': 'id,score,text,html,extracted_metadata.filename'}
+        qopts = {'query': query_text, 'return': 'id,score,text,extracted_metadata.filename'}
         my_query = discovery.query(environ_id_string, collection, qopts)
         sub_results = my_query.get("results", [])
         
@@ -45,13 +46,24 @@ def query_environ(query_text,environ_id_string, collect_ids):
             sub_result['text'] = json_field_text
             
             #get filename
-            json_field_filename = sub_result['extracted_metadata'].get['filename']
-            json_field_filename = json_field_filename.rsplit('.', 1)
+            json_field_filename = sub_result['extracted_metadata'].get('filename')
+            jon_field_filename = json_field_filename.rsplit('.', 1)
+            
+            collection_id = sub_result.get('collection')
+            
+            print '************ collection_id = ', collection_id
+            
+            collectionObj = Collection.objects.get(collectionIDString=collection_id)
+            if collectionObj is not None:
+                collectionName = collectionObj.getCollectionName()
+             
+                print 'collectionName = ', collectionName
+                sub_result['CollectionName'] = collectionName
             
             #lookup contact in address book
             
 
-            results.append(json.dumps(sub_result))
+            results.append(sub_result)
     return results
     
 def get_contacts():

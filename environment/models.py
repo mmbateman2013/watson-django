@@ -21,6 +21,9 @@ class Collection(models.Model):
         from watson_developer_cloud import DiscoveryV1
 
         discovery = DiscoveryV1(username='{username}',password='{password}',version='2016-12-01')
+        
+    def getCollectionName(self):
+        return self.collectionName
 
 class Document(models.Model):
     documentName = models.CharField(max_length=250)

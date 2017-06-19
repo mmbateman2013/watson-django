@@ -78,3 +78,19 @@ img{
 #QueryPage {
     font-size: 30px;
 }
+
+.resultrow {
+    display: inline-block;
+    width: 400px;
+    height: 100px;
+}
+
+#results {
+    width: 90%;
+    margin: auto;
+}
+
+#border {
+    border: 3px solid #375F9B;
+    display: inline-block;
+}

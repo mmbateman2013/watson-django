@@ -6,20 +6,35 @@
         <title>Results Page</title>
     </head>
     <body>
-        <div id="Query Search">
+        <header>
             <label id="QueryPage" for="Query:">Query: </label>
              {{ form.queryText }}
-               
-        </div>
+        </header>
+        <br>
+        <br>
+        <a href = "{% url 'environment:query' environ_id %}">Query</a>
         <h1>Results:</h1>
         <div id="results">
-            {%for result in results%}
-            <a href = "{% url 'environment:query' environ_id %}">Query</a>
-        <div>
-                    <p>{{result}}</p>
-                 </div>
-            {% endfor %}
+        <article>
+            <div>
+                {% for result in results %}
+                    <div id="border">
+                        <div class="resultrow">
+                            {{ result.extracted_metadata.filename}}
+                            <br>
+                            <br>
+                            {{ result.text }}
+                        </div>
+                        <div class="resultrow">
+                            {{ result.CollectionName }}
+                            <br>
+                            {{ result.score }}
+                        </div>
+                    </div>
+                    <br>
+                {% endfor %}
+            </div>
+        </article>
         </div>
-        
     </body>
 </html>
