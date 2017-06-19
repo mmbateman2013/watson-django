@@ -72,17 +72,23 @@ def query_environ(query_text,environ_id_string, collect_ids):
             
             #write html content to db
             doc_id = sub_result.get("id")
-            json_field_html = sub_result.get("html").replace('<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>', '').trim()
+            json_field_html = sub_result.get("html").replace('<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>', '')
+
+            print "Document ID = ", doc_id
             
             try:
-                doc = Document.objects.get(documentIDString=id)
+                doc = Document.objects.get(documentIDString=doc_id)
                 doc.documentName = json_field_filename
                 doc.documentContent = json_field_html
             except Document.DoesNotExist:
-                doc = Document(documentName=json_field_filename, documentIDString=id, collection=collectionObj, documentContent=json_field_html)
+                print "Dcument ID doesnt exist ", doc_id
+                doc = Document(documentName=json_field_filename, documentIDString=doc_id, collection=collectionObj, documentContent=json_field_html)
+                doc.save()
             
-            doc.save()
+            
             sub_result['document_id'] = doc.id
+            
+            print "DB DOC ID = ", doc.id
 
             results.append(sub_result)
     return results

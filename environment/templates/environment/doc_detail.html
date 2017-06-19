@@ -1,3 +1,4 @@
 {% load static %}
 <!DOCTYPE html>
-{{ html_content }}
+
+{% autoescape off %}{{ html_content }}{% endautoescape %} 

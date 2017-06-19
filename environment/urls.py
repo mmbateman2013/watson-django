@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from . import views
+from environment import views
 
 app_name = 'environment'
 
@@ -17,13 +17,15 @@ urlpatterns = [
     url(r'^(?P<environment_id>[0-9]+)/query$', views.query, name='query'),
     
     # /environment/{environ_id}/query/results
-    url(r'^(?P<environment_id>[0-9]+)/query/results$', views.query, name='results'),
+    url(r'^(?P<environment_id>[0-9]+)/query/results$', views.results, name='results'),
     
     # ex: /environment/contacts/
     url(r'^contacts/', views.contacts, name='contacts'),
     
     # /environment/{environ_id}/document/{doc_id}/detail
-    url(r'^(?P<environment_id>[0-9]+)/document/(?P<document_id>[0-9]+)/detail$', views.document_detail, name='detail'),
+    #url(r'^/document/(?P<document_id>[0-9]+)/detail$', views.document_detail, name='document_detail'),
+    
+    url(r'^(?P<environment_id>[0-9]+)/document/(?P<document_id>[0-9]+)/detail$', views.document_detail, name='document_detail'),
 
     #TODO: Add views.col_documents
     #TODO: Add view for adding documents to a collection

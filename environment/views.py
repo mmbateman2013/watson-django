@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
 from .models import Environment, Collection, Google_Contact, Document
-from .forms import QueryForm
+from .forms import QueryForm, ResultsForm
 from . import services
 
 def contacts(request):
@@ -51,21 +51,37 @@ def contacts(request):
     return render(request, 'environment/contacts.html', context)
 
 def query(request, environment_id):
-    if request.method == 'POST':
+    request.session["queryText"] = None
+    request.session["collections"] = None
+    form = QueryForm()
+    return render(request, 'environment/query.html', {'form':form, 'environ_id':environment_id})
+        
+def results(request, environment_id):
+    
+    query_text = request.session["queryText"]
+    collections = request.session["collections"]
+    
+    if query_text == None:
         form = QueryForm(request.POST)
         if form.is_valid():
-            query_text = form.cleaned_data['queryText']
+            request.session["queryText"] = form.cleaned_data['queryText']
             collections = []
             for collection in form.cleaned_data['collection']:
                 collections.append(collection.collectionIDString)
-            environ = Environment.objects.get(pk=environment_id)
-            results = services.query_environ(query_text,environ.environmentIDString,collections)
-       
-                    
-            return render(request, 'environment/results.html', {'results':results,'form':form, 'environ_id':environment_id})
+        request.session["collections"] = collections
+        form = ResultsForm(request.POST)
     else:
-        form = QueryForm()
-        return render(request, 'environment/query.html', {'form':form, 'environ_id':environment_id})
+        form = ResultsForm(request.POST)
+        if form.is_valid():
+            request.session["queryText"] = form.cleaned_data['queryText']
+
+    query_text = request.session["queryText"]
+
+    environ = Environment.objects.get(pk=environment_id)
+    results = services.query_environ(query_text,environ.environmentIDString,collections)
+
+            
+    return render(request, 'environment/results.html', {'results':results,'form':form, 'environ_id':environment_id})
     
 
 def index(request):
@@ -76,10 +92,15 @@ def env_detail(request, environment_id):
     environ = get_object_or_404(Environment, pk=environment_id)
     return render(request, 'environment/env_detail.html', {'environ': environ,})
     
+# def document_detail(request, document_id):
+#     doc = get_object_or_404(Document, pk=document_id)
+#     #perhaps do something to the html content so it renders right
+#     return render(request, 'environment/doc_detail.html', {'html_content': doc.documentContent, 'document_id' : document_id})
+    
 def document_detail(request, environment_id, document_id):
     doc = get_object_or_404(Document, pk=document_id)
     #perhaps do something to the html content so it renders right
-    return render(request, 'environment/doc_detail.html', {'html_content': doc.documentContent})
+    return render(request, 'environment/doc_detail.html', {'html_content': doc.documentContent, 'document_id' : document_id})
     
 #NOT CURRENTLY in URLS TODO
 def col_documents(request, environment_id ,collection_id):
