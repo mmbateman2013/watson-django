@@ -7,3 +7,6 @@ from models import Collection
 class QueryForm(forms.Form):
     queryText = forms.CharField(max_length=1000, required=True)
     collection = forms.ModelMultipleChoiceField(queryset=Collection.objects.all().order_by('collectionName'), required=False)
+    
+class ResultsForm(forms.Form):
+    queryText = forms.CharField(max_length=1000, required=True)

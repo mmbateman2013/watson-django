@@ -29,8 +29,7 @@ class Document(models.Model):
     documentName = models.CharField(max_length=250)
     documentIDString = models.CharField(max_length=36)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
-    documentFile = models.FileField(default='media/default.html')
-    documentContent = models.CharField(max_length=10000, default='')
+    documentFile = models.CharField(default='media/default.html')
     
     def __str__(self):
         return self.documentName+' '+self.documentIDString

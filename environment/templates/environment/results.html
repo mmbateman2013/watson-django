@@ -1,17 +1,44 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="main.css" type="text/css"/>
+        <link rel="stylesheet" href="{% static 'environment/css/main.css' %}" type="text/css"/>
         <title>Results Page</title>
     </head>
     <body>
-        <h1>Query: </h1>
-        <p>{{query}}</p>
+        <header>
+            <form action="results" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" value="Refresh" />
+            </form>
+        </header>
+        <br>
+        <br>
+        <a href = "{% url 'environment:query' environ_id %}">Query</a>
         <h1>Results:</h1>
         <div id="results">
-            {%for result in results%}
-                <p>{{result}}</p>
-            {% endfor %}
+        <article>
+            <div>
+                {% for result in results %}
+                    <div id="border">
+                        <div class="resultrow">
+                            Source: {{ result.CollectionName }}
+                            <br>
+                            <br>
+                            {{ result.text }}
+                        </div>
+                        <div class="resultrow">
+                            <br>
+                            Relevancy Score: {{ result.score }}
+                            <br>
+                            <a href = "{% url 'environment:document_detail' environment_id=environ_id document_id=result.document_id %}">View Full Content</a>
+                        </div>
+                    </div>
+                    <br>
+                {% endfor %}
+            </div>
+        </article>
         </div>
     </body>
 </html>
