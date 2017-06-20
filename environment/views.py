@@ -61,6 +61,8 @@ def results(request, environment_id):
     query_text = request.session["queryText"]
     collections = request.session["collections"]
     
+    isRefreshAction = False
+    
     if query_text == None:
         form = QueryForm(request.POST)
         if form.is_valid():
@@ -74,12 +76,19 @@ def results(request, environment_id):
         form = ResultsForm(request.POST)
         if form.is_valid():
             request.session["queryText"] = form.cleaned_data['queryText']
+            
+        isRefreshAction = True # results method is called because of refresh or filter action
 
     query_text = request.session["queryText"]
 
     environ = Environment.objects.get(pk=environment_id)
-    results = services.query_environ(query_text,environ.environmentIDString,collections)
-
+    
+    # if filter action thenn apply the filer condition
+    if(isRefreshAction):
+        results = applyFiltersToResults(request, environment_id, 'All', .8)
+    else:
+        results = services.query_environ(query_text,environ.environmentIDString,collections)
+        
             
     return render(request, 'environment/results.html', {'results':results,'form':form, 'environ_id':environment_id})
     
@@ -107,7 +116,33 @@ def col_documents(request, environment_id ,collection_id):
     environ = get_object_or_404(Environment, pk=environment_id)
     collect = get_object_or_404(Collection, pk=collection_id)
     return render(request, 'environment/documents.html', {'environ': environ,'collect': collect})
+
+
+# method to apply filters on the returned results
+def applyFiltersToResults(request, environment_id, filterCollection, filterRelevance):
+    collections = []
     
+    if(filterCollection == 'All'):
+        collections = request.session["collections"]
+    else:
+        collections = filterCollection
+        
+    query_text = request.session["queryText"]    
+    environ = Environment.objects.get(pk=environment_id)
+    results = services.query_environ(query_text, environ.environmentIDString, collections)
+        
+    # -1 filter relevance means ALL    
+    if(filterRelevance == -1):
+        return results
+    else:    
+        filterResults = []
+        for result in results:
+            if( result.get('score') >= filterRelevance ):
+                filterResults.append(result)           
+    
+    return filterResults
+    
+
 #TODO: Add view for adding collections
 #TODO: Add view for adding documents to a collection
 #TODO: Add view to call forms.py QueryForm and hook up Michael's html and css
